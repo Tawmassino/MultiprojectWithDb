@@ -1,58 +1,57 @@
-﻿using MultiprojectWithDB.DataAccessLayer.DBInterfaces;
-using MultiprojectWithDB.DataAccessLayer.Entities;
-using MultiprojectWithDB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MultiprojectWithDb.DTOs;
 using MultiprojectWithDB.BusinessLogic.BL_Interfaces;
-using MultiprojectWithDb.DTOs;
+using MultiprojectWithDB.DataAccessLayer.DBInterfaces;
+using MultiprojectWithDB.DataAccessLayer.Entities;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace MultiprojectWithDB.BusinessLogic.Services
 {
-    public class UserService : IUserService//kelt i API
+    public class UserService : IUserService
     {
         private readonly IUsersDBRepository _userDBRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IUsersDBRepository userRepository)
+        public UserService(IUsersDBRepository userRepository,
+            IHttpContextAccessor contextAccessor)
         {
             _userDBRepository = userRepository;
+            _httpContextAccessor = contextAccessor;
+
         }
 
         // ==================== methods ====================
 
 
-        public UserResponseDTO Login(string username, string password, out string role)
+        public UserResponse Login(string username, string password, out string role)
         {
-            var user = _userDBRepository.GetUser(username);
+            var user = _userDBRepository.GetUserByUsername(username);
             role = user.Role;
             if (user == null)
             {
-                return new UserResponseDTO(false, "Username or password does not match");
+                return new UserResponse(false, "Username or password does not match");
             };
 
             if (!VerifyPasswordHash(password, user.Password, user.PasswordSalt))
             {
-                return new UserResponseDTO(false, "Username or password does not match");
+                return new UserResponse(false, "Username or password does not match");
             }
 
-            return new UserResponseDTO(true, "User logged in");
+            return new UserResponse(true, "User logged in");
         }
 
 
-        public UserResponseDTO Register(string username, string password)
+        public UserResponse Register(string username, string password)//nera parametre emaill net
         {
-            var user = _userDBRepository.GetUser(username);
+            var user = _userDBRepository.GetUserByUsername(username);
             if (user is not null)
             {
-                return new UserResponseDTO(false, "User already exists");
+                return new UserResponse(false, "User already exists");
             }
 
             user = CreateUser(username, password);
             _userDBRepository.SaveUser(user);
-            return new UserResponseDTO(true);
+            return new UserResponse(true);
         }
 
         private User CreateUser(string username, string password)
@@ -60,15 +59,22 @@ namespace MultiprojectWithDB.BusinessLogic.Services
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
             var user = new User
             {
-                Id = Convert.ToInt32(Guid.NewGuid()),
                 Username = username,
                 Password = passwordHash,
                 PasswordSalt = passwordSalt,
-                Role = "User"
+                Role = "User",
             };
 
             return user;
         }
+
+        public int GetCurrentUserId()
+        {
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //per program cs: builder.Services.AddHttpContextAccessor();
+            return int.Parse(userId);
+        }
+
 
         // ==================== password hash verification ====================
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -86,7 +92,6 @@ namespace MultiprojectWithDB.BusinessLogic.Services
 
             return computedHash.SequenceEqual(passwordHash);
         }
-
 
     }
 }

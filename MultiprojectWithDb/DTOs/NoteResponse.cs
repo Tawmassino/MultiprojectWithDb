@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace MultiprojectWithDB.MAIN.DTOs
 {
-    public class NoteResponseDTO
+    public class NoteResponse
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
 
-        public NoteResponseDTO(bool isSuccess, string message)
+        public NoteResponse(bool isSuccess, string message)
         {
             IsSuccess = isSuccess;
             Message = message;
         }
 
-        public NoteResponseDTO(bool isSuccess)
+        public NoteResponse(bool isSuccess)
         {
             IsSuccess = isSuccess;
         }

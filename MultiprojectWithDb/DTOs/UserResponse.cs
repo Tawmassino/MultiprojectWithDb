@@ -1,17 +1,17 @@
 ﻿namespace MultiprojectWithDb.DTOs
 {
-    public class UserResponseDTO
+    public class UserResponse
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
 
-        public UserResponseDTO(bool isSuccess, string message)
+        public UserResponse(bool isSuccess, string message)
         {
             IsSuccess = isSuccess;
             Message = message;
         }
 
-        public UserResponseDTO(bool isSuccess)
+        public UserResponse(bool isSuccess)
         {
             IsSuccess = isSuccess;
         }

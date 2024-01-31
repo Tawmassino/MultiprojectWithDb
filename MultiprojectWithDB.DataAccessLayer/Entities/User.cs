@@ -1,22 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiprojectWithDB.DataAccessLayer.Entities
 {
     public class User
     {
+        //keisti
+        //validatoraii tik DTO
+        // ir tiktai POST (create) arba PUT (update)
+
+
         public int Id { get; set; }
-        public string Username { get; set; }
-        public string? Email { get; set; }
+        [Required][StringLength(30, MinimumLength = 3)] public string Username { get; set; }
+        [EmailAddress] public string? Email { get; set; }
+
+
+
         public byte[] Password { get; set; }
         public byte[] PasswordSalt { get; set; }
+
+
         public string Role { get; set; }
 
-        [ForeignKey("UserNotes")]
+        //nereikia FK sitam
         public List<Note> Notes { get; set; }
 
     }

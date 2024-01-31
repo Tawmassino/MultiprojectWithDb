@@ -2,11 +2,6 @@
 using MultiprojectWithDB.DataAccessLayer.DBInterfaces;
 using MultiprojectWithDB.DataAccessLayer.Entities;
 using MultiprojectWithDB.MAIN.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiprojectWithDB.BusinessLogic.Services
 {
@@ -20,22 +15,32 @@ namespace MultiprojectWithDB.BusinessLogic.Services
         }
 
         // ==================== methods ====================
-        public NoteResponseDTO AddNewNote(Note note)
+        public NoteResponse AddNewNote(Note note)
         {
-            var existingNote = _notesDBRepository.GetByTitle(note.Title);
+            var existingNote = _notesDBRepository.GetNoteByTitle(note.Title);
             if (existingNote != null)
             {
-                return new NoteResponseDTO(false, "Note already exists");
+                return new NoteResponse(false, "Note already exists");
             }
 
             _notesDBRepository.AddNewNote(note);
-            return new NoteResponseDTO(true);
+            return new NoteResponse(true);
 
         }
 
         public Note GetNote(string noteTitle)
         {
-            return _notesDBRepository.GetByTitle(noteTitle);
+            return _notesDBRepository.GetNoteByTitle(noteTitle);
+        }
+
+        public Note GetNoteById(int id)
+        {
+            return _notesDBRepository.GetNoteById(id);
+        }
+
+        public List<Note> GetUserNotes(int userId)
+        {
+            return _notesDBRepository.GetAllNotesByUser(userId).ToList();
         }
 
         public void RemoveNote(int noteId)
@@ -43,14 +48,16 @@ namespace MultiprojectWithDB.BusinessLogic.Services
             _notesDBRepository.DeleteNote(noteId);
         }
 
-        public void UpdateNote(Note note, string username)
+        public void UpdateNote(Note note, int userId)
         {
-            var noteFromDB = _notesDBRepository.GetById(note.Id);
+            //kai yra tarpinis servisas, gali but pamestas dbcontext
+
+            var noteFromDB = _notesDBRepository.GetNoteById(note.Id);
             if (noteFromDB == null)
             {
                 throw new Exception("Shopping list not found");//ilogger
             }
-            if (noteFromDB.Author != username)
+            if (noteFromDB.UserId != userId)
             {
                 throw new Exception("User is trying to update foreign note");
             }

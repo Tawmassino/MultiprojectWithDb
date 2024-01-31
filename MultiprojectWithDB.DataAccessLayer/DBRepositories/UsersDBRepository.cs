@@ -14,14 +14,20 @@ namespace MultiprojectWithDB.DataAccessLayer.DBRepositories
 
         public UsersDBRepository(MultiprojectDbContext context)
         {
-            context.Database.EnsureCreated();
+            context.Database.EnsureCreated();//jei yra sita eilute, is viso nereikia migraciju. DB kurse
+            //kol nera duomenu (per swagger irasyt) tol DB nera
             _context = context;
         }
         // ==================== methods ====================
 
-        public User GetUser(string username)
+        public User GetUserByUsername(string username)
         {
             return _context.Users.SingleOrDefault(u => u.Username == username);
+        }
+
+        public User GetUserById(int userId)
+        {
+            return _context.Users.SingleOrDefault(u => u.Id == userId);
         }
 
         public void SaveUser(User user)

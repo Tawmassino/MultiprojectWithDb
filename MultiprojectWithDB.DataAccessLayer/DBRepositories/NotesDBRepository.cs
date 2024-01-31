@@ -37,17 +37,17 @@ namespace MultiprojectWithDB.DataAccessLayer.DBRepositories
 
         public IEnumerable<Note> GetAllNotesByUser(int id)
         {
-            return _context.Notes.Include(n => n.Author).Where(note => note.Id == id);
+            return _context.Notes.Include(n => n.User).Where(note => note.Id == id);
         }
 
-        public Note GetById(int id)
+        public Note GetNoteById(int id)
         {
-            return _context.Notes.Include(n => n.Author).FirstOrDefault(n => n.Id == id);
+            return _context.Notes.Include(n => n.User).FirstOrDefault(n => n.Id == id);
         }
 
-        public Note GetByTitle(string title)
+        public Note GetNoteByTitle(string title)
         {
-            return _context.Notes.Include(n => n.Author).FirstOrDefault(n => n.Title == title);
+            return _context.Notes.Include(n => n.User).FirstOrDefault(n => n.Title == title);
         }
 
         public void UpdateNote(Note note)

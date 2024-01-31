@@ -1,13 +1,8 @@
 ﻿using MultiprojectWithDb.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiprojectWithDB.MAIN.DTOs
 {
-    public class LoginResponseDTO : UserResponseDTO
+    public class LoginResponseDTO : UserResponse
     {
         public string Token { get; set; }
 

@@ -16,13 +16,13 @@ namespace MultiprojectWithDB.DataAccessLayer.DBInterfaces
         IEnumerable<Note> GetAllNotesByUser(int id);
 
         //get by id
-        Note GetById(int id);
+        Note GetNoteById(int id);
 
         //update
         void UpdateNote(Note note);
 
         //delete
         void DeleteNote(int id);
-        Note GetByTitle(string noteTitle);
+        Note GetNoteByTitle(string noteTitle);
     }
 }

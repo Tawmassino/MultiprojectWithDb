@@ -9,7 +9,8 @@ namespace MultiprojectWithDB.DataAccessLayer.DBInterfaces
 {
     public interface IUsersDBRepository
     {
-        User GetUser(string username);
+        User GetUserByUsername(string username);
+        User GetUserById(int userId);
         void SaveUser(User user);
     }
 }
